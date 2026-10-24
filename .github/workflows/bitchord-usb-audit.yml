@@ -13,7 +13,6 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: gradle
-      - uses: android-actions/setup-android@v3
       - name: Apply diagnostic patch
         run: git apply BitChord_USB_diagnostic-1.patch
       - name: Build development debug APK
