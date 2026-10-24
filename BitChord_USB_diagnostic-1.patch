@@ -1,0 +1,28 @@
+--- a/app/src/main/java/com/music/bitchord/playback/PlaybackService.kt
++++ b/app/src/main/java/com/music/bitchord/playback/PlaybackService.kt
+@@ -6427,6 +6427,25 @@
+             knownSystemMixerRateHz = if (routeKind == AudioRouting.Kind.USB) 48000 else null,
+         )
+ 
++        // Diagnostic-only telemetry: reports the proposed route, not proof of bit-perfect playback.
++        // Compare this with AudioFlinger and /proc/asound/card*/stream* on the actual device.
++        Log.i(
++            "BitChordUsbAudit",
++            "route=$routeKind device=${activeDevice?.productName} " +
++                "source=${source.encoding} ${source.sampleRateHz}Hz ${source.bitDepth}bit " +
++                "channels=${source.channelCount} " +
++                "directApi=${directSupport.isDirectSupported} " +
++                "directDetails=${directSupport.description} " +
++                "usbProbeViable=${directUsbProbe?.isViable} " +
++                "usbUac=${directUsbProbe?.uacVersion} " +
++                "usbPermission=${directUsbProbe?.hasPermission} " +
++                "usbReason=${directUsbProbe?.diagnosticReason} " +
++                "selectedTransport=${negotiation.output.transport} " +
++                "selectedEncoding=${negotiation.output.encoding} " +
++                "selectedRate=${negotiation.output.sampleRateHz} " +
++                "fallback=${negotiation.output.fallbackReason} " +
++                "detail=${negotiation.output.fallbackDetail}",
++        )
+         AudioOutputStatus.publishNegotiation(negotiation)
+ 
+         return negotiation.output.encoding
